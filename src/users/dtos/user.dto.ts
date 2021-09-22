@@ -1,4 +1,4 @@
-import { IsNotEmpty, MinLength, MaxLength, IsString, IsEmail, IsOptional, IsPhoneNumber, IsBoolean, IsObject } from "class-validator";
+import { IsString, IsOptional, IsPhoneNumber, IsBoolean, IsObject } from "class-validator";
 import { ApiProperty } from "@nestjs/swagger";
 import { AvailabilityPerDate } from "./availabilityPerDate.dto";
 
@@ -18,6 +18,5 @@ export class User {
 
   @IsObject()
   @IsOptional()
-  @ApiProperty()
   availabilityPerDate?: AvailabilityPerDate;
 }
