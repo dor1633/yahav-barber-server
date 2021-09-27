@@ -13,4 +13,8 @@ export class UsersRepository {
     const createdUser = new this.usersModel(user);
     return createdUser.save();
   }
+
+  async getById(userId: string) {
+    return this.usersModel.findById(userId).exec();
+  }
 }

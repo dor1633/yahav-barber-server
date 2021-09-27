@@ -7,15 +7,16 @@ import {
   Param,
 } from "@nestjs/common";
 import { ApiTags, ApiCreatedResponse, } from "@nestjs/swagger";
-import { AvailabilityPerDate } from "./dtos/availabilityPerDate.dto";
-import { User } from "./dtos/user.dto";
-import { UsersRepository } from "./users.service";
+import { BarbersValidator } from "./barbers.validator";
+import { AvailabilityPerDate } from "../users/dtos/availabilityPerDate.dto";
+import { BarbersHelper } from "./barbers.helper";
 
 @Controller("barbers")
 @ApiTags("Barbers")
 export class BarbersController {
   constructor(
-    private usersRepository: UsersRepository
+    private barbersValidator: BarbersValidator,
+    private barbersHelper: BarbersHelper
   ) { }
 
   @Post(":barberId/availability")
@@ -23,9 +24,11 @@ export class BarbersController {
   @ApiCreatedResponse({
     status: 201,
     description: "Enter availability of barber",
-    type: [User],
+    type: [AvailabilityPerDate],
   })
   async enterAvailability(@Param("barberId") barberId: string, @Body() availabilityPerDate: AvailabilityPerDate) {
-    const
+    const barber = await this.barbersValidator.getBarberIfExist(barberId);
+    this.barbersValidator.validateAvailabilityPerDate(availabilityPerDate);
+    this.barbersHelper.updateBarberAvailability(barber, availabilityPerDate);
   }
 }
