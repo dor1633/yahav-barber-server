@@ -10,7 +10,7 @@ import { ApiTags, ApiCreatedResponse, } from "@nestjs/swagger";
 import { BarbersValidator } from "./barbers.validator";
 import { AvailabilityPerDate } from "../users/dtos/availabilityPerDate.dto";
 import { BarbersHelper } from "./barbers.helper";
-import { UsersRepository } from "../users/users.service";
+import { UsersRepository } from "../users/users.repository";
 
 @Controller("barbers")
 @ApiTags("Barbers")

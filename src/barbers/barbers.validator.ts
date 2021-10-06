@@ -1,7 +1,7 @@
 import { BadRequestException, Injectable, NotFoundException } from "@nestjs/common";
 import * as _ from 'lodash'
 import { AvailabilityPerDate } from "../users/dtos/availabilityPerDate.dto";
-import { UsersRepository } from "../users/users.service";
+import { UsersRepository } from "../users/users.repository";
 
 @Injectable()
 export class BarbersValidator {

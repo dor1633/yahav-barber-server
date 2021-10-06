@@ -18,5 +18,5 @@ export class User {
 
   @IsObject()
   @IsOptional()
-  availabilityPerDate?: AvailabilityPerDate;
+  schedule?: AvailabilityPerDate;
 }
