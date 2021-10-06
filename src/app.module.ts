@@ -1,6 +1,7 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { MongooseModule } from '@nestjs/mongoose';
+import { BarbersModule } from './barbers/barbers.module';
 import { UsersModule } from './users/users.module';
 
 @Module({
@@ -11,7 +12,8 @@ import { UsersModule } from './users/users.module';
       }),
     }),
     ConfigModule.forRoot(),
-    UsersModule
+    UsersModule,
+    BarbersModule
   ],
   controllers: [],
   providers: [],

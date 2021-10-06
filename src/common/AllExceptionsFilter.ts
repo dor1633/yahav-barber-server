@@ -13,7 +13,7 @@ export class AllExceptionsFilter implements ExceptionFilter {
       statusCode: status,
       path: request.url,
       name: exception?.name || "Error",
-      message: exception?.response?.message || exception?.message || exception,
+      message: exception?.response?.message || exception?.message || exception
     });
   }
 }

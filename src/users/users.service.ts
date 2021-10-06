@@ -17,4 +17,8 @@ export class UsersRepository {
   async getById(userId: string) {
     return this.usersModel.findById(userId).exec();
   }
+
+  async updateUser(user: User) {
+    return this.usersModel.updateOne({ _id: user._id }, user).exec();
+  }
 }

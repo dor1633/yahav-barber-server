@@ -1,5 +1,5 @@
 import { Injectable } from "@nestjs/common";
-import _ from 'lodash'
+import * as _ from 'lodash'
 import { AvailabilityPerDate } from "../users/dtos/availabilityPerDate.dto";
 import { User } from "../users/dtos/user.dto";
 import { UsersRepository } from "../users/users.service";
@@ -10,12 +10,11 @@ export class BarbersHelper {
   }
 
   updateBarberAvailability(barber: User, availabilityPerDate: AvailabilityPerDate) {
+    if (_.isEmpty(barber.availabilityPerDate)) {
+      barber.availabilityPerDate = {}
+    }
     for (const availabilityDate in availabilityPerDate) {
-      if (!barber[availabilityDate]) {
-        barber[availabilityDate] = availabilityPerDate[availabilityDate];
-      } else {
-        barber[availabilityDate] = barber[availabilityDate].concat(availabilityPerDate[availabilityDate])
-      }
+      barber.availabilityPerDate[availabilityDate] = availabilityPerDate[availabilityDate];
     }
   }
 }
