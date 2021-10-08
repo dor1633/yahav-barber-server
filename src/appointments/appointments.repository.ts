@@ -13,4 +13,12 @@ export class AppointmentsRepository {
     return createdAppointment.save();
   }
 
+  async getAppointmentById(appointmentId: string) {
+    return this.appointmentsModel.findById(appointmentId);
+  }
+
+  async deleteAppointment(appointmentId: string) {
+    return this.appointmentsModel.deleteOne({ _id: appointmentId });
+  }
+
 }

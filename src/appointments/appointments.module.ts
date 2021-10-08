@@ -7,6 +7,7 @@ import { BarbersModule } from "../barbers/barbers.module";
 import { UsersModule } from "../users/users.module";
 import { BarbersHelper } from "../barbers/barbers.helper";
 import { AppointmentsParser } from "./appointments.parser.";
+import { AppointmentsValidator } from "./appointments.validator";
 
 @Module({
   imports: [
@@ -15,7 +16,7 @@ import { AppointmentsParser } from "./appointments.parser.";
     UsersModule
   ],
   controllers: [AppointmentsController],
-  providers: [AppointmentsRepository, BarbersHelper, AppointmentsParser],
+  providers: [AppointmentsRepository, BarbersHelper, AppointmentsParser, AppointmentsValidator],
   exports: [],
 })
 export class AppointmentsModule { }
