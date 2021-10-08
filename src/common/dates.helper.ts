@@ -22,7 +22,5 @@ export function getFormattedDate(date: Date) {
     let day = date.getDate().toString();
     day = day.length > 1 ? day : '0' + day;
 
-    console.log("day + month + year % 100", day + month + year % 100)
-
     return day + month + year % 100;
 }

@@ -26,16 +26,21 @@ export class BarbersValidator {
 
   validateBarberAvailableDuringDate(barber: User, dateRange: DateRange) {
     const { fromDate, toDate } = dateRange;
-    const fullDate = getFormattedDate(fromDate);
-    if (!barber.schedule[fullDate] ||
-      !barber.schedule[fullDate].some(time => fromDate.getTime() >= time.from && time.to >= toDate.getTime())) {
-      throw new BadRequestException(`The barber isn't available that day`);
+
+    if (fromDate >= toDate) {
+      throw new BadRequestException(`Invalid dates`);
+    }
+
+    const formattedDate = getFormattedDate(fromDate);
+    if (!barber.schedule[formattedDate] ||
+      !barber.schedule[formattedDate].some(time => fromDate.getTime() >= time.from && time.to >= toDate.getTime())) {
+      throw new BadRequestException(`The barber isn't available that date`);
     }
   }
 
   validateAvailabilityObject(availabilityPerDate: AvailabilityPerDate) {
     for (const availabilityDate in availabilityPerDate) {
-      if (availabilityDate.length !== 6) {
+      if (availabilityDate.length !== 8) {
         throw new BadRequestException(`The date ${availabilityDate} doesn't valid`)
       }
 

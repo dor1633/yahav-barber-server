@@ -5,6 +5,8 @@ import { MongooseModule } from "@nestjs/mongoose";
 import { Appointment, AppointmentSchema } from "./schemas/appointment.model";
 import { BarbersModule } from "../barbers/barbers.module";
 import { UsersModule } from "../users/users.module";
+import { BarbersHelper } from "../barbers/barbers.helper";
+import { AppointmentsParser } from "./appointments.parser.";
 
 @Module({
   imports: [
@@ -13,7 +15,7 @@ import { UsersModule } from "../users/users.module";
     UsersModule
   ],
   controllers: [AppointmentsController],
-  providers: [AppointmentsRepository],
+  providers: [AppointmentsRepository, BarbersHelper, AppointmentsParser],
   exports: [],
 })
 export class AppointmentsModule { }

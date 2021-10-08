@@ -1,15 +1,14 @@
 import { Injectable } from "@nestjs/common";
 import { InjectModel } from "@nestjs/mongoose";
 import { Model } from "mongoose";
-import { Appointment } from "./schemas/appointment.model";
-import { Appointment as AppointmentDto } from "./dtos/appointment.dto";
+import { Appointment, SavedAppointment } from "./schemas/appointment.model";
 
 @Injectable()
 export class AppointmentsRepository {
   constructor(@InjectModel(Appointment.name) private readonly appointmentsModel: Model<Appointment>) {
   }
 
-  async createAppointment(appointment: AppointmentDto) {
+  async createAppointment(appointment: SavedAppointment) {
     const createdAppointment = new this.appointmentsModel(appointment);
     return createdAppointment.save();
   }
