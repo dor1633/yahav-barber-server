@@ -1,6 +1,7 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { MongooseModule } from '@nestjs/mongoose';
+import { AppointmentsModule } from './appointments/appointments.module';
 import { BarbersModule } from './barbers/barbers.module';
 import { UsersModule } from './users/users.module';
 
@@ -13,7 +14,8 @@ import { UsersModule } from './users/users.module';
     }),
     ConfigModule.forRoot(),
     UsersModule,
-    BarbersModule
+    BarbersModule,
+    AppointmentsModule
   ],
   controllers: [],
   providers: [],

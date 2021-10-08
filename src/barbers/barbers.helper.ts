@@ -1,7 +1,8 @@
 import { Injectable } from "@nestjs/common";
 import * as _ from 'lodash'
+import { convertDateAndTimeRangeToDatesObjects } from "../common/dates.helper";
+import { User } from "../users/schemas/user.model";
 import { AvailabilityPerDate } from "../users/dtos/availabilityPerDate.dto";
-import { User } from "../users/dtos/user.dto";
 import { UsersRepository } from "../users/users.repository";
 
 @Injectable()
@@ -15,7 +16,11 @@ export class BarbersHelper {
     }
 
     for (const availabilityDate in availabilityPerDate) {
-      barber.schedule[availabilityDate] = availabilityPerDate[availabilityDate];
+      barber.schedule[availabilityDate] = [];
+      for (const timeRange of availabilityPerDate[availabilityDate]) {
+        const { fromDate, toDate } = convertDateAndTimeRangeToDatesObjects(availabilityDate, timeRange);
+        barber.schedule[availabilityDate].push({ from: fromDate.getMilliseconds(), to: toDate.getMilliseconds() });
+      }
     }
   }
 }

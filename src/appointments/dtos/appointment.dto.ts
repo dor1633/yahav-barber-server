@@ -1,7 +1,10 @@
 import { IsString } from "class-validator";
-import { ApiProperty } from "@nestjs/swagger";
+import { ApiProperty, ApiResponseProperty } from "@nestjs/swagger";
 
 export class Appointment {
+  @ApiResponseProperty()
+  _id?: string;
+
   @IsString()
   @ApiProperty()
   barberId: string;
@@ -11,5 +14,10 @@ export class Appointment {
   gettingHaircutId: string;
 
   @IsString()
+  @ApiProperty()
+  date: string;
+
+  @IsString()
+  @ApiProperty()
   timeRange: string;
 }

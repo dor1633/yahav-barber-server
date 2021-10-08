@@ -1,6 +1,6 @@
 import { Schema, Prop, SchemaFactory } from "@nestjs/mongoose";
 import { Document } from "mongoose";
-import { AvailabilityPerDate } from "./availabilityPerDate.model";
+import { BarberSchedule } from "./barberSchedule.model";
 
 @Schema()
 export class User extends Document {
@@ -14,7 +14,7 @@ export class User extends Document {
   isBarber: boolean;
 
   @Prop()
-  availabilityPerDate?: AvailabilityPerDate;
+  schedule?: BarberSchedule;
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);

@@ -1,5 +1,5 @@
 import { Module } from "@nestjs/common";
-import { UsersModule } from "src/users/users.module";
+import { UsersModule } from "../users/users.module";
 import { BarbersController } from "./barbers.controller";
 import { BarbersHelper } from "./barbers.helper";
 import { BarbersValidator } from "./barbers.validator";
@@ -10,6 +10,6 @@ import { BarbersValidator } from "./barbers.validator";
   ],
   controllers: [BarbersController],
   providers: [BarbersValidator, BarbersHelper],
-  exports: [],
+  exports: [BarbersValidator],
 })
 export class BarbersModule { }
