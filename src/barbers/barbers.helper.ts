@@ -19,7 +19,7 @@ export class BarbersHelper {
       barber.schedule[availabilityDate] = [];
       for (const timeRange of availabilityPerDate[availabilityDate]) {
         const { fromDate, toDate } = convertDateAndTimeRangeToDatesObjects(availabilityDate, timeRange);
-        barber.schedule[availabilityDate].push({ from: fromDate.getMilliseconds(), to: toDate.getMilliseconds() });
+        barber.schedule[availabilityDate].push({ from: fromDate.getTime(), to: toDate.getTime() });
       }
     }
   }

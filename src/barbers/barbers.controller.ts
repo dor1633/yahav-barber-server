@@ -30,7 +30,7 @@ export class BarbersController {
   })
   async enterAvailability(@Param("barberId") barberId: string, @Body() availabilityPerDate: AvailabilityPerDate) {
     const barber = await this.barbersValidator.getBarberIfExist(barberId);
-    this.barbersValidator.validateAvailabilityPerDate(availabilityPerDate);
+    this.barbersValidator.validateAvailabilityObject(availabilityPerDate);
     this.barbersHelper.updateBarberAvailability(barber, availabilityPerDate);
 
     await this.usersRepository.updateUser(barber);

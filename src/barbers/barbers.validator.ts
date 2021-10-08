@@ -1,5 +1,7 @@
 import { BadRequestException, Injectable, NotFoundException } from "@nestjs/common";
 import * as _ from 'lodash'
+import { DateRange, getFormattedDate } from "src/common/dates.helper";
+import { User } from "src/users/schemas/user.model";
 import { AvailabilityPerDate } from "../users/dtos/availabilityPerDate.dto";
 import { UsersRepository } from "../users/users.repository";
 
@@ -22,7 +24,16 @@ export class BarbersValidator {
     return barber;
   }
 
-  validateAvailabilityPerDate(availabilityPerDate: AvailabilityPerDate) {
+  validateBarberAvailableDuringDate(barber: User, dateRange: DateRange) {
+    const { fromDate, toDate } = dateRange;
+    const fullDate = getFormattedDate(fromDate);
+    if (!barber.schedule[fullDate] ||
+      !barber.schedule[fullDate].some(time => fromDate.getTime() >= time.from && time.to >= toDate.getTime())) {
+      throw new BadRequestException(`The barber isn't available that day`);
+    }
+  }
+
+  validateAvailabilityObject(availabilityPerDate: AvailabilityPerDate) {
     for (const availabilityDate in availabilityPerDate) {
       if (availabilityDate.length !== 6) {
         throw new BadRequestException(`The date ${availabilityDate} doesn't valid`)
