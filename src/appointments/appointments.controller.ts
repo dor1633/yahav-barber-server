@@ -49,17 +49,15 @@ export class AppointmentsController {
 
   @Delete(":appointmentId")
   @ApiOkResponse({
-    description: "schedule an appointment to barber",
+    description: "delete an appointment",
     type: [Appointment],
   })
   async deleteAppointment(@Param("appointmentId") appointmentId: string) {
     const appointment = await this.appointmentsValidator.getAppointmentIfExist(appointmentId);
-    await this.usersValidator.throwErrorIfUserIdDoesNotExist(appointment.gettingHaircutId);
-    const dateRange = convertDateAndTimeRangeToDatesObjects(appointment.date, appointment.timeRange);
 
-    this.barbersValidator.validateBarberAvailableDuringDate(barber, dateRange);
-    await this.barbersHelper.updateBarberAvailableAfterUserInviteAppointment(barber, dateRange);
+    this.barbersHelper.updateBarberAvailableAfterUserCancellingAppointment(appointment);
+    await this.appointmentsRepository.deleteAppointment(appointmentId);
 
-    // return this.appointmentsRepository.deleteAppointment(appointmentId);
+    return appointment;
   }
 }
