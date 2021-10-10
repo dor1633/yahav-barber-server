@@ -14,7 +14,7 @@ export class Appointment extends Document {
   barberId: string;
 
   @Prop({ required: true })
-  gettingHaircutId: string;
+  clientId: string;
 
   @Prop({ required: true })
   from: number;

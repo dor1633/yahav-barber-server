@@ -18,6 +18,11 @@ export class UsersRepository {
     return this.usersModel.findById(userId).exec();
   }
 
+  async getAllUsers() {
+    return this.usersModel.find().exec();
+
+  }
+
   async updateUser(user: User) {
     return this.usersModel.updateOne({ _id: user._id }, user).exec();
   }

@@ -1,17 +1,20 @@
 import { Injectable } from "@nestjs/common";
 import * as _ from 'lodash'
-import { convertDateAndTimeRangeToDatesObjects, DateRange, getFormattedDate } from "../common/dates.helper";
+import { convertDateAndTimeRangeToDatesObjects, convertDateToDateObject, DateRange, formatDateToTime, getFormattedDate } from "../common/dates.helper";
 import { User } from "../users/schemas/user.model";
 import { AvailabilityPerDate } from "../users/dtos/availabilityPerDate.dto";
 import { UsersRepository } from "../users/users.repository";
 import { TimeRange } from "../users/schemas/barberSchedule.model";
 import { Appointment } from "../appointments/schemas/appointment.model";
 import { BarbersValidator } from "./barbers.validator";
+import { Schedule } from './dtos/schedule.dto'
+import { AppointmentsRepository } from "src/appointments/appointments.repository";
 
 @Injectable()
 export class BarbersHelper {
   constructor(private usersRepository: UsersRepository,
     private barbersValidator: BarbersValidator,
+    private appointmentsRepository: AppointmentsRepository,
   ) {
   }
 
@@ -58,5 +61,36 @@ export class BarbersHelper {
         barber.schedule[formattedAvailabilityDate].push({ from: fromDate.getTime(), to: toDate.getTime() });
       }
     }
+  }
+
+  async getScheduleOfBarberBetweenDates(barber: User, fromDateString: string, toDateString: string): Promise<Schedule> {
+    const fromDate = convertDateToDateObject(fromDateString);
+    let toDate = convertDateToDateObject(toDateString);
+    toDate = new Date(toDate.setDate(toDate.getDate() + 1));
+    const relevantAppointments = await this.appointmentsRepository.getAppointmentsOfBarberBetweenDates(barber._id,
+      fromDate, toDate);
+
+    return this.formatAppointmentsToSchedule(relevantAppointments);
+
+  }
+
+  async formatAppointmentsToSchedule(relevantAppointments: Appointment[]): Promise<Schedule> {
+    const schedule: Schedule = {};
+    const users = await this.usersRepository.getAllUsers();
+    for (const appointment of relevantAppointments) {
+      const date = getFormattedDate(new Date(appointment.from), true)
+      if (!schedule[date]) {
+        schedule[date] = [];
+      }
+
+      const client = users.find(user => user._id.toString() === appointment.clientId)
+      schedule[date].push({
+        clientId: client._id,
+        clientName: client.name,
+        timeRange: `${formatDateToTime(new Date(appointment.from))}-${formatDateToTime(new Date(appointment.to))}`
+      });
+    }
+
+    return schedule;
   }
 }
