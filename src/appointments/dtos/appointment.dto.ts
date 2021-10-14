@@ -11,7 +11,7 @@ export class Appointment {
 
   @IsString()
   @ApiProperty()
-  gettingHaircutId: string;
+  clientId: string;
 
   @IsString()
   @ApiProperty()

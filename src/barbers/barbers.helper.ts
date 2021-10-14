@@ -85,6 +85,7 @@ export class BarbersHelper {
 
       const client = users.find(user => user._id.toString() === appointment.clientId)
       schedule[date].push({
+        appointmentId: appointment._id,
         clientId: client._id,
         clientName: client.name,
         timeRange: `${formatDateToTime(new Date(appointment.from))}-${formatDateToTime(new Date(appointment.to))}`

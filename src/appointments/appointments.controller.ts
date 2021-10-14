@@ -38,7 +38,7 @@ export class AppointmentsController {
   async scheduleAnAppointmentToBarber(@Body() appointment: Appointment) {
     //////////////////todo: user has other appointment in this time 
     const barber = await this.barbersValidator.getBarberIfExist(appointment.barberId);
-    await this.usersValidator.throwErrorIfUserIdDoesNotExist(appointment.gettingHaircutId);
+    await this.usersValidator.throwErrorIfUserIdDoesNotExist(appointment.clientId);
     const dateRange = convertDateAndTimeRangeToDatesObjects(appointment.date, appointment.timeRange);
 
     this.barbersValidator.validateBarberAvailableDuringDate(barber, dateRange);

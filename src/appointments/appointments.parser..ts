@@ -10,7 +10,7 @@ export class AppointmentsParser {
     parseAppointmentDtoToDbObject(appointment: AppointmentDto, dateRange: DateRange): SavedAppointment {
         return {
             barberId: appointment.barberId,
-            gettingHaircutId: appointment.gettingHaircutId,
+            clientId: appointment.clientId,
             from: dateRange.fromDate.getTime(),
             to: dateRange.toDate.getTime()
         }

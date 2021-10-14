@@ -3,7 +3,7 @@ import { Document } from "mongoose";
 
 export interface SavedAppointment {
   barberId: string;
-  gettingHaircutId: string;
+  clientId: string;
   from: number;
   to: number;
 }
