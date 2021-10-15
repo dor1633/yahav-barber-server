@@ -1,5 +1,5 @@
 import { IsString, IsOptional, IsPhoneNumber, IsObject, IsNumber } from "class-validator";
-import { ApiProperty } from "@nestjs/swagger";
+import { ApiProperty, ApiResponseProperty } from "@nestjs/swagger";
 import { AvailabilityPerDate } from "./availabilityPerDate.dto";
 
 export class Barber {
@@ -14,7 +14,8 @@ export class Barber {
 
   @IsObject()
   @IsOptional()
-  schedule?: AvailabilityPerDate;
+  @ApiResponseProperty()
+  availability?: AvailabilityPerDate;
 
   @IsNumber()
   @ApiProperty()

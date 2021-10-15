@@ -6,6 +6,6 @@ export class TimeRange {
 }
 
 @Schema()
-export class BarberSchedule {
+export class BarberAvailability {
   [date: string]: TimeRange[]
 }

@@ -30,8 +30,8 @@ export class BarbersValidator {
     }
 
     const formattedDate = getFormattedDate(fromDate);
-    if (!barber.schedule[formattedDate] ||
-      !barber.schedule[formattedDate].some(time => fromDate.getTime() >= time.from && time.to >= toDate.getTime())) {
+    if (!barber.availability[formattedDate] ||
+      !barber.availability[formattedDate].some(time => fromDate.getTime() >= time.from && time.to >= toDate.getTime())) {
       throw new BadRequestException(`The barber isn't available that date and time`);
     }
   }

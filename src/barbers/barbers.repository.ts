@@ -19,6 +19,10 @@ export class BarbersRepository {
     return this.barbersModel.findById(barberId).exec();
   }
 
+  async getAllBarbers() {
+    return this.barbersModel.find().exec();
+  }
+
   async updateBarber(barber: Barber) {
     return this.barbersModel.updateOne({ _id: barber._id }, barber).exec();
   }

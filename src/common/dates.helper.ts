@@ -31,7 +31,15 @@ export function getFormattedDate(date: Date, shouldReturnWithSeparator = false) 
     return shouldReturnWithSeparator ? `${day}-${month}-${year % 100}` : day + month + year % 100;
 }
 
-export function formatDateToTime(date: Date) {
+export function formattedDateToDate(formattedDate: string) {
+    return `${formattedDate.substring(0, 2)}-${formattedDate.substring(2, 4)}-${formattedDate.substring(4, 6)}`
+}
+
+export function formatFromAndToToTimeRange(from: number, to: number) {
+    return `${formatDateToTime(new Date(from))}-${formatDateToTime(new Date(to))}`;
+}
+
+function formatDateToTime(date: Date) {
     const hours = formatTwoDigits(date.getHours());
     const minutes = formatTwoDigits(date.getMinutes());
     return hours + ":" + minutes;

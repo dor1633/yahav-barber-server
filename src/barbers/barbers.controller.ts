@@ -8,7 +8,7 @@ import {
   Get,
   Query,
 } from "@nestjs/common";
-import { ApiTags, ApiCreatedResponse, ApiQuery, } from "@nestjs/swagger";
+import { ApiTags, ApiCreatedResponse, ApiQuery, ApiOkResponse, } from "@nestjs/swagger";
 import { BarbersValidator } from "./barbers.validator";
 import { BarbersHelper } from "./barbers.helper";
 import { Schedule } from './dtos/schedule.dto'
@@ -70,11 +70,25 @@ export class BarbersController {
   @Post()
   @HttpCode(HttpStatus.CREATED)
   @ApiCreatedResponse({
-    status: HttpStatus.CREATED,
     description: "Create new user",
     type: [Barber],
   })
   async addUser(@Body() createdBarber: Barber) {
     return await this.barbersRepository.createBarber(createdBarber);
+  }
+
+  @Get()
+  @ApiOkResponse({
+    description: "Get all barbers",
+    type: [Barber],
+  })
+  async getBarbers() {
+    const barbers = await this.barbersRepository.getAllBarbers();
+    const formattedBarbers = [];
+    for (const barber of barbers) {
+      formattedBarbers.push(this.barbersHelper.formatBarberFreeSchedule(barber));
+    }
+
+    return formattedBarbers;
   }
 }

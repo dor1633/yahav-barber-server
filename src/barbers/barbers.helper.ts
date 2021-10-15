@@ -1,7 +1,6 @@
 import { Injectable } from "@nestjs/common";
 import * as _ from 'lodash'
-import { convertDateAndTimeRangeToDatesObjects, convertDateToDateObject, DateRange, formatDateToTime, getFormattedDate } from "../common/dates.helper";
-import { User } from "../users/schemas/user.model";
+import { convertDateAndTimeRangeToDatesObjects, convertDateToDateObject, DateRange, formatFromAndToToTimeRange, formattedDateToDate, getFormattedDate } from "../common/dates.helper";
 import { UsersRepository } from "../users/users.repository";
 import { Appointment } from "../appointments/schemas/appointment.model";
 import { BarbersValidator } from "./barbers.validator";
@@ -11,6 +10,7 @@ import { Barber } from "./schemas/barber.schema";
 import { AvailabilityPerDate } from "./dtos/availabilityPerDate.dto";
 import { TimeRange } from "./schemas/barberSchedule.schema";
 import { BarbersRepository } from "./barbers.repository";
+import { Barber as BarberDto } from './dtos/barber.model'
 
 @Injectable()
 export class BarbersHelper {
@@ -26,7 +26,7 @@ export class BarbersHelper {
     const formattedDate = getFormattedDate(fromDate);
     const newTimeRanges: TimeRange[] = [];
 
-    for (const time of barber.schedule[formattedDate]) {
+    for (const time of barber.availability[formattedDate]) {
       if (fromDate.getTime() >= time.from && time.to >= toDate.getTime()) {
         if (time.from !== fromDate.getTime()) {
           newTimeRanges.push({ from: time.from, to: fromDate.getTime() });
@@ -39,29 +39,29 @@ export class BarbersHelper {
       }
     }
 
-    barber.schedule[formattedDate] = newTimeRanges;
+    barber.availability[formattedDate] = newTimeRanges;
     await this.barbersRepository.updateBarber(barber);
   }
 
   async updateBarberAvailableAfterUserCancellingAppointment(appointment: Appointment) {
     const barber = await this.barbersValidator.getBarberIfExist(appointment.barberId);
     const formattedDate = getFormattedDate(new Date(appointment.from));
-    barber.schedule[formattedDate].push({ from: appointment.from, to: appointment.to });
+    barber.availability[formattedDate].push({ from: appointment.from, to: appointment.to });
 
     await this.barbersRepository.updateBarber(barber);
   }
 
   updateBarberAvailability(barber: Barber, availabilityPerDate: AvailabilityPerDate) {
-    if (_.isEmpty(barber.schedule)) {
-      barber.schedule = {}
+    if (_.isEmpty(barber.availability)) {
+      barber.availability = {}
     }
 
     for (const availabilityDate in availabilityPerDate) {
       const formattedAvailabilityDate = availabilityDate.replace(/-/g, '');
-      barber.schedule[formattedAvailabilityDate] = [];
+      barber.availability[formattedAvailabilityDate] = [];
       for (const timeRange of availabilityPerDate[availabilityDate]) {
         const { fromDate, toDate } = convertDateAndTimeRangeToDatesObjects(availabilityDate, timeRange);
-        barber.schedule[formattedAvailabilityDate].push({ from: fromDate.getTime(), to: toDate.getTime() });
+        barber.availability[formattedAvailabilityDate].push({ from: fromDate.getTime(), to: toDate.getTime() });
       }
     }
   }
@@ -91,10 +91,30 @@ export class BarbersHelper {
         appointmentId: appointment._id,
         clientId: client._id,
         clientName: client.name,
-        timeRange: `${formatDateToTime(new Date(appointment.from))}-${formatDateToTime(new Date(appointment.to))}`
+        timeRange: formatFromAndToToTimeRange(appointment.from, appointment.to)
       });
     }
 
     return schedule;
+  }
+
+  formatBarberFreeSchedule(barber: Barber): BarberDto {
+    const formattedBarber: BarberDto = {
+      appointmentTime: barber.appointmentTime,
+      name: barber.name,
+      phoneNumber: barber.phoneNumber,
+      availability: {}
+    }
+
+    for (const formattedBarberAvailabilityDay in barber.availability) {
+      const availabilityDate = formattedDateToDate(formattedBarberAvailabilityDay)
+      formattedBarber.availability[availabilityDate] = [];
+
+      for (const timeRange of barber.availability[formattedBarberAvailabilityDay]) {
+        formattedBarber.availability[availabilityDate].push(formatFromAndToToTimeRange(timeRange.from, timeRange.to))
+      }
+    }
+
+    return formattedBarber;
   }
 }
