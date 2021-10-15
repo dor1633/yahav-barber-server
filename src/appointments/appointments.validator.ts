@@ -1,8 +1,5 @@
 import { BadRequestException, Injectable, NotFoundException } from "@nestjs/common";
 import * as _ from 'lodash'
-import { DateRange, getFormattedDate } from "src/common/dates.helper";
-import { User } from "src/users/schemas/user.model";
-import { AvailabilityPerDate } from "../users/dtos/availabilityPerDate.dto";
 import { AppointmentsRepository } from "./appointments.repository";
 
 @Injectable()

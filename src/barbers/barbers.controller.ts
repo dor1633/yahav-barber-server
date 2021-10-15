@@ -10,10 +10,11 @@ import {
 } from "@nestjs/common";
 import { ApiTags, ApiCreatedResponse, ApiQuery, } from "@nestjs/swagger";
 import { BarbersValidator } from "./barbers.validator";
-import { AvailabilityPerDate } from "../users/dtos/availabilityPerDate.dto";
 import { BarbersHelper } from "./barbers.helper";
-import { UsersRepository } from "../users/users.repository";
 import { Schedule } from './dtos/schedule.dto'
+import { AvailabilityPerDate } from "./dtos/availabilityPerDate.dto";
+import { Barber } from "./dtos/barber.model";
+import { BarbersRepository } from "./barbers.repository";
 
 @Controller("barbers")
 @ApiTags("Barbers")
@@ -21,7 +22,7 @@ export class BarbersController {
   constructor(
     private barbersValidator: BarbersValidator,
     private barbersHelper: BarbersHelper,
-    private usersRepository: UsersRepository
+    private barbersRepository: BarbersRepository
   ) { }
 
   @Post(":barberId/availability")
@@ -36,7 +37,7 @@ export class BarbersController {
     this.barbersValidator.validateAvailabilityObject(availabilityPerDate);
     this.barbersHelper.updateBarberAvailability(barber, availabilityPerDate);
 
-    await this.usersRepository.updateUser(barber);
+    await this.barbersRepository.updateBarber(barber);
 
     return barber;
   }
@@ -64,5 +65,16 @@ export class BarbersController {
     const barber = await this.barbersValidator.getBarberIfExist(barberId);
 
     return await this.barbersHelper.getScheduleOfBarberBetweenDates(barber, fromDate, toDate);
+  }
+
+  @Post()
+  @HttpCode(HttpStatus.CREATED)
+  @ApiCreatedResponse({
+    status: HttpStatus.CREATED,
+    description: "Create new user",
+    type: [Barber],
+  })
+  async addUser(@Body() createdBarber: Barber) {
+    return await this.barbersRepository.createBarber(createdBarber);
   }
 }

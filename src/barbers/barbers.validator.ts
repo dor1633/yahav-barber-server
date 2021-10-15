@@ -2,29 +2,27 @@ import { BadRequestException, Injectable, NotFoundException } from "@nestjs/comm
 import * as _ from 'lodash'
 import { DateRange, getFormattedDate } from "src/common/dates.helper";
 import { User } from "src/users/schemas/user.model";
-import { AvailabilityPerDate } from "../users/dtos/availabilityPerDate.dto";
 import { UsersRepository } from "../users/users.repository";
+import { BarbersRepository } from "./barbers.repository";
+import { AvailabilityPerDate } from "./dtos/availabilityPerDate.dto";
+import { Barber } from "./schemas/barber.schema";
 
 @Injectable()
 export class BarbersValidator {
-  constructor(private usersService: UsersRepository) {
+  constructor(private barbersRepository: BarbersRepository) {
   }
 
   async getBarberIfExist(barberId: string) {
-    const barber = await this.usersService.getById(barberId);
+    const barber = await this.barbersRepository.getBarberById(barberId);
 
     if (_.isEmpty(barber)) {
       throw new NotFoundException(`Barber ${barberId} doesn't exist`);
     }
 
-    if (!barber.isBarber) {
-      throw new BadRequestException(`The user ${barberId} isn't barber`);
-    }
-
     return barber;
   }
 
-  validateBarberAvailableDuringDate(barber: User, dateRange: DateRange) {
+  validateBarberAvailableDuringDate(barber: Barber, dateRange: DateRange) {
     const { fromDate, toDate } = dateRange;
 
     if (fromDate >= toDate) {
@@ -34,7 +32,7 @@ export class BarbersValidator {
     const formattedDate = getFormattedDate(fromDate);
     if (!barber.schedule[formattedDate] ||
       !barber.schedule[formattedDate].some(time => fromDate.getTime() >= time.from && time.to >= toDate.getTime())) {
-      throw new BadRequestException(`The barber isn't available that date`);
+      throw new BadRequestException(`The barber isn't available that date and time`);
     }
   }
 

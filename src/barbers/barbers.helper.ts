@@ -2,23 +2,26 @@ import { Injectable } from "@nestjs/common";
 import * as _ from 'lodash'
 import { convertDateAndTimeRangeToDatesObjects, convertDateToDateObject, DateRange, formatDateToTime, getFormattedDate } from "../common/dates.helper";
 import { User } from "../users/schemas/user.model";
-import { AvailabilityPerDate } from "../users/dtos/availabilityPerDate.dto";
 import { UsersRepository } from "../users/users.repository";
-import { TimeRange } from "../users/schemas/barberSchedule.model";
 import { Appointment } from "../appointments/schemas/appointment.model";
 import { BarbersValidator } from "./barbers.validator";
 import { Schedule } from './dtos/schedule.dto'
 import { AppointmentsRepository } from "src/appointments/appointments.repository";
+import { Barber } from "./schemas/barber.schema";
+import { AvailabilityPerDate } from "./dtos/availabilityPerDate.dto";
+import { TimeRange } from "./schemas/barberSchedule.schema";
+import { BarbersRepository } from "./barbers.repository";
 
 @Injectable()
 export class BarbersHelper {
-  constructor(private usersRepository: UsersRepository,
+  constructor(private barbersRepository: BarbersRepository,
+    private usersRepository: UsersRepository,
     private barbersValidator: BarbersValidator,
     private appointmentsRepository: AppointmentsRepository,
   ) {
   }
 
-  async updateBarberAvailableAfterUserInviteAppointment(barber: User, appointmentDateRange: DateRange) {
+  async updateBarberAvailableAfterUserInviteAppointment(barber: Barber, appointmentDateRange: DateRange) {
     const { fromDate, toDate } = appointmentDateRange;
     const formattedDate = getFormattedDate(fromDate);
     const newTimeRanges: TimeRange[] = [];
@@ -37,7 +40,7 @@ export class BarbersHelper {
     }
 
     barber.schedule[formattedDate] = newTimeRanges;
-    await this.usersRepository.updateUser(barber);
+    await this.barbersRepository.updateBarber(barber);
   }
 
   async updateBarberAvailableAfterUserCancellingAppointment(appointment: Appointment) {
@@ -45,10 +48,10 @@ export class BarbersHelper {
     const formattedDate = getFormattedDate(new Date(appointment.from));
     barber.schedule[formattedDate].push({ from: appointment.from, to: appointment.to });
 
-    await this.usersRepository.updateUser(barber);
+    await this.barbersRepository.updateBarber(barber);
   }
 
-  updateBarberAvailability(barber: User, availabilityPerDate: AvailabilityPerDate) {
+  updateBarberAvailability(barber: Barber, availabilityPerDate: AvailabilityPerDate) {
     if (_.isEmpty(barber.schedule)) {
       barber.schedule = {}
     }
@@ -63,7 +66,7 @@ export class BarbersHelper {
     }
   }
 
-  async getScheduleOfBarberBetweenDates(barber: User, fromDateString: string, toDateString: string): Promise<Schedule> {
+  async getScheduleOfBarberBetweenDates(barber: Barber, fromDateString: string, toDateString: string): Promise<Schedule> {
     const fromDate = convertDateToDateObject(fromDateString);
     let toDate = convertDateToDateObject(toDateString);
     toDate = new Date(toDate.setDate(toDate.getDate() + 1));
