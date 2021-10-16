@@ -19,5 +19,5 @@ export class Barber {
 
   @IsNumber()
   @ApiProperty()
-  appointmentTime: number;
+  appointmentMinutes: number;
 }

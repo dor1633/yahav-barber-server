@@ -14,7 +14,7 @@ export class Barber extends Document {
   availability?: BarberAvailability;
 
   @Prop()
-  appointmentTime: number;
+  appointmentMinutes: number;
 }
 
 export const BarberSchema = SchemaFactory.createForClass(Barber);

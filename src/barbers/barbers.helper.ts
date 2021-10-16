@@ -100,7 +100,7 @@ export class BarbersHelper {
 
   formatBarberFreeSchedule(barber: Barber): BarberDto {
     const formattedBarber: BarberDto = {
-      appointmentTime: barber.appointmentTime,
+      appointmentMinutes: barber.appointmentMinutes,
       name: barber.name,
       phoneNumber: barber.phoneNumber,
       availability: {}
