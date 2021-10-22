@@ -3,7 +3,7 @@ import { InjectModel } from "@nestjs/mongoose";
 import { Model } from "mongoose";
 import { } from './schemas/barber.schema'
 import { Barber } from "./schemas/barber.schema";
-import { Barber as BarberDto } from "./dtos/barber.model";
+import { Barber as BarberDto } from "./dtos/barber.dto";
 
 @Injectable()
 export class BarbersRepository {

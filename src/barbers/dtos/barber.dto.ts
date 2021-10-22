@@ -3,6 +3,9 @@ import { ApiProperty, ApiResponseProperty } from "@nestjs/swagger";
 import { AvailabilityPerDate } from "./availabilityPerDate.dto";
 
 export class Barber {
+  @ApiResponseProperty()
+  _id?: string;
+
   @IsString()
   @ApiProperty()
   name: string;

@@ -13,7 +13,7 @@ import { BarbersValidator } from "./barbers.validator";
 import { BarbersHelper } from "./barbers.helper";
 import { Schedule } from './dtos/schedule.dto'
 import { AvailabilityPerDate } from "./dtos/availabilityPerDate.dto";
-import { Barber } from "./dtos/barber.model";
+import { Barber } from "./dtos/barber.dto";
 import { BarbersRepository } from "./barbers.repository";
 
 @Controller("barbers")

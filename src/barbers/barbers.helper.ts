@@ -10,7 +10,7 @@ import { Barber } from "./schemas/barber.schema";
 import { AvailabilityPerDate } from "./dtos/availabilityPerDate.dto";
 import { TimeRange } from "./schemas/barberSchedule.schema";
 import { BarbersRepository } from "./barbers.repository";
-import { Barber as BarberDto } from './dtos/barber.model'
+import { Barber as BarberDto } from './dtos/barber.dto'
 
 @Injectable()
 export class BarbersHelper {
@@ -100,6 +100,7 @@ export class BarbersHelper {
 
   formatBarberFreeSchedule(barber: Barber): BarberDto {
     const formattedBarber: BarberDto = {
+      _id: barber._id,
       appointmentMinutes: barber.appointmentMinutes,
       name: barber.name,
       phoneNumber: barber.phoneNumber,

@@ -6,6 +6,8 @@ import {
   HttpStatus,
   Delete,
   Param,
+  Get,
+  Query,
 } from "@nestjs/common";
 import { ApiTags, ApiCreatedResponse, ApiOkResponse, } from "@nestjs/swagger";
 import { Appointment } from "./dtos/appointment.dto";
@@ -17,7 +19,7 @@ import { BarbersHelper } from "../barbers/barbers.helper";
 import { AppointmentsParser } from "./appointments.parser.";
 import { AppointmentsValidator } from "./appointments.validator";
 
-@Controller("appointment")
+@Controller("appointments")
 @ApiTags("Appointment")
 export class AppointmentsController {
   constructor(
@@ -44,7 +46,7 @@ export class AppointmentsController {
     this.barbersValidator.validateBarberAvailableDuringDate(barber, dateRange);
     await this.barbersHelper.updateBarberAvailableAfterUserInviteAppointment(barber, dateRange);
 
-    return this.appointmentsRepository.createAppointment(this.appointmentsParser.parseAppointmentDtoToDbObject(appointment, dateRange));
+    return this.appointmentsRepository.createAppointment(this.appointmentsParser.parseAppointmentDtoToDBObject(appointment, dateRange));
   }
 
   @Delete(":appointmentId")
@@ -59,5 +61,17 @@ export class AppointmentsController {
     await this.appointmentsRepository.deleteAppointment(appointmentId);
 
     return appointment;
+  }
+
+  @Get("/future")
+  @ApiOkResponse({
+    description: "get future appointments of user",
+    type: [Appointment],
+  })
+  async getFutureAppointmentsOfUser(@Query("userId") userId: string) {
+    await this.usersValidator.throwErrorIfUserIdDoesNotExist(userId);
+    const futureAppointments = await this.appointmentsRepository.getFutureAppointmentsOfClient(userId);
+
+    return this.appointmentsParser.parseAppointmentsInDBToAppointmentsDto(futureAppointments);
   }
 }

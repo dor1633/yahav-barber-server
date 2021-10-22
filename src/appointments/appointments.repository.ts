@@ -29,4 +29,8 @@ export class AppointmentsRepository {
     }).exec();
   }
 
+  async getFutureAppointmentsOfClient(clientId: string) {
+    return this.appointmentsModel.find({ clientId, from: { "$gte": new Date().getTime() } }).exec();
+  }
+
 }
