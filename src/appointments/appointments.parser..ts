@@ -20,6 +20,7 @@ export class AppointmentsParser {
         const formattedAppointments: AppointmentDto[] = [];
         for (const appointment of appointments) {
             formattedAppointments.push({
+                _id: appointment._id,
                 barberId: appointment.barberId,
                 clientId: appointment.clientId,
                 date: getFormattedDate(new Date(appointment.from), true),
