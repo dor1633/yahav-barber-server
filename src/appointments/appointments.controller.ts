@@ -46,7 +46,12 @@ export class AppointmentsController {
     this.barbersValidator.validateBarberAvailableDuringDate(barber, dateRange);
     await this.barbersHelper.updateBarberAvailableAfterUserInviteAppointment(barber, dateRange);
 
-    return this.appointmentsRepository.createAppointment(this.appointmentsParser.parseAppointmentDtoToDBObject(appointment, dateRange));
+    const newAppointment = await this.appointmentsRepository.createAppointment(this.appointmentsParser.parseAppointmentDtoToDBObject(appointment, dateRange));
+
+    return {
+      _id: newAppointment._id,
+      ...appointment
+    }
   }
 
   @Delete(":appointmentId")
