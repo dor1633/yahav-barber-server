@@ -26,4 +26,8 @@ export class UsersRepository {
   async updateUser(user: User) {
     return this.usersModel.updateOne({ _id: user._id }, user).exec();
   }
+  async getUserByPhoneNumber(phoneNumber: string) {
+    return this.usersModel.findOne({ phoneNumber }).exec();
+
+  }
 }

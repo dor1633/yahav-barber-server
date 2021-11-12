@@ -4,16 +4,20 @@ import {
   Body,
   HttpCode,
   HttpStatus,
+  Query,
+  Get,
 } from "@nestjs/common";
-import { ApiTags, ApiCreatedResponse, } from "@nestjs/swagger";
+import { ApiTags, ApiCreatedResponse, ApiQuery, } from "@nestjs/swagger";
 import { User } from "./dtos/user.dto";
+import { UsersHelper } from "./users.helper.";
 import { UsersRepository } from "./users.repository";
 
 @Controller("users")
 @ApiTags("Users")
 export class UserController {
   constructor(
-    private usersRepository: UsersRepository
+    private usersRepository: UsersRepository,
+    private usersHelper: UsersHelper
   ) { }
 
   @Post()
@@ -25,5 +29,19 @@ export class UserController {
   })
   async addUser(@Body() createdUser: User) {
     return await this.usersRepository.createUser(createdUser);
+  }
+
+  @Get()
+  @ApiQuery({
+    name: 'phoneNumber',
+    type: String,
+    required: false
+  })
+  async getUserByParams(@Query('phoneNumber') phoneNumber) {
+    const user = await this.usersRepository.getUserByPhoneNumber(phoneNumber);
+
+    this.usersHelper.handleGetUserResponse(user);
+
+    return user;
   }
 }
