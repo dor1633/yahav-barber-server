@@ -43,28 +43,15 @@ export class BarbersController {
   }
 
 
-  @Get(":barberId/schedule")
-  @HttpCode(HttpStatus.CREATED)
-  @ApiCreatedResponse({
-    status: 201,
+  @Get(":barberId/futureSchedule")
+  @ApiOkResponse({
     description: "Get schedule of barber",
     type: Schedule,
   })
-  @ApiQuery({
-    name: 'toDate',
-    type: String,
-    required: true
-  })
-  @ApiQuery({
-    name: 'fromDate',
-    type: String,
-    required: true
-  })
-  async getScheduleOfBarber(@Param("barberId") barberId: string, @Query('fromDate') fromDate,
-    @Query('toDate') toDate) {
+  async getScheduleOfBarber(@Param("barberId") barberId: string) {
     const barber = await this.barbersValidator.getBarberIfExist(barberId);
 
-    return await this.barbersHelper.getScheduleOfBarberBetweenDates(barber, fromDate, toDate);
+    return await this.barbersHelper.getBarberFutureSchedule(barber);
   }
 
   @Post()

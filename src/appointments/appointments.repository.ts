@@ -21,11 +21,10 @@ export class AppointmentsRepository {
     return this.appointmentsModel.deleteOne({ _id: appointmentId });
   }
 
-  async getAppointmentsOfBarberBetweenDates(barberId: string, fromDate: Date, toDate: Date) {
+  async getAppointmentsOfBarberFromDate(barberId: string, fromDate: Date) {
     return this.appointmentsModel.find({
       barberId,
-      from: { "$gte": fromDate.getTime() },
-      to: { "$lt": toDate.getTime() }
+      from: { "$gte": fromDate.getTime() }
     }).exec();
   }
 

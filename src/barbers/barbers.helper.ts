@@ -66,12 +66,9 @@ export class BarbersHelper {
     }
   }
 
-  async getScheduleOfBarberBetweenDates(barber: Barber, fromDateString: string, toDateString: string): Promise<Schedule> {
-    const fromDate = convertDateToDateObject(fromDateString);
-    let toDate = convertDateToDateObject(toDateString);
-    toDate = new Date(toDate.setDate(toDate.getDate() + 1));
-    const relevantAppointments = await this.appointmentsRepository.getAppointmentsOfBarberBetweenDates(barber._id,
-      fromDate, toDate);
+  async getBarberFutureSchedule(barber: Barber): Promise<Schedule> {
+    const relevantAppointments = await this.appointmentsRepository.getAppointmentsOfBarberFromDate(barber._id,
+      new Date());
 
     return this.formatAppointmentsToSchedule(relevantAppointments);
 
