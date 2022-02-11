@@ -39,7 +39,7 @@ export class BarbersController {
 
     await this.barbersRepository.updateBarber(barber);
 
-    return barber;
+    return this.barbersHelper.formatBarberFreeSchedule(barber);
   }
 
 
