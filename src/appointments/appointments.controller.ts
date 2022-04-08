@@ -8,8 +8,9 @@ import {
   Param,
   Get,
   Query,
+  UseGuards,
 } from "@nestjs/common";
-import { ApiTags, ApiCreatedResponse, ApiOkResponse, } from "@nestjs/swagger";
+import { ApiTags, ApiCreatedResponse, ApiOkResponse, ApiBearerAuth } from "@nestjs/swagger";
 import { Appointment } from "./dtos/appointment.dto";
 import { AppointmentsRepository } from "./appointments.repository";
 import { BarbersValidator } from "../barbers/barbers.validator";
@@ -18,9 +19,12 @@ import { convertDateAndTimeRangeToDatesObjects } from "src/common/dates.helper";
 import { BarbersHelper } from "../barbers/barbers.helper";
 import { AppointmentsParser } from "./appointments.parser.";
 import { AppointmentsValidator } from "./appointments.validator";
+import { FirebaseAuthGuard } from "src/firebase/firebase-auth.guard";
 
 @Controller("appointments")
+@ApiBearerAuth('access-token')
 @ApiTags("Appointment")
+@UseGuards(FirebaseAuthGuard)
 export class AppointmentsController {
   constructor(
     private barbersValidator: BarbersValidator,

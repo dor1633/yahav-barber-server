@@ -6,17 +6,19 @@ import {
   HttpStatus,
   Param,
   Get,
-  Query,
+  UseGuards,
 } from "@nestjs/common";
-import { ApiTags, ApiCreatedResponse, ApiQuery, ApiOkResponse, } from "@nestjs/swagger";
+import { ApiTags, ApiCreatedResponse, ApiOkResponse, ApiBearerAuth } from "@nestjs/swagger";
 import { BarbersValidator } from "./barbers.validator";
 import { BarbersHelper } from "./barbers.helper";
 import { Schedule } from './dtos/schedule.dto'
 import { AvailabilityPerDate } from "./dtos/availabilityPerDate.dto";
 import { Barber } from "./dtos/barber.dto";
 import { BarbersRepository } from "./barbers.repository";
+import { FirebaseAuthGuard } from "src/firebase/firebase-auth.guard";
 
 @Controller("barbers")
+@ApiBearerAuth('access-token')
 @ApiTags("Barbers")
 export class BarbersController {
   constructor(
@@ -27,6 +29,7 @@ export class BarbersController {
 
   @Post(":barberId/availability")
   @HttpCode(HttpStatus.CREATED)
+  @UseGuards(FirebaseAuthGuard)
   @ApiCreatedResponse({
     status: 201,
     description: "Enter availability of barber",
@@ -44,6 +47,7 @@ export class BarbersController {
 
 
   @Get(":barberId/futureSchedule")
+  @UseGuards(FirebaseAuthGuard)
   @ApiOkResponse({
     description: "Get schedule of barber",
     type: Schedule,
@@ -56,6 +60,7 @@ export class BarbersController {
 
   @Post()
   @HttpCode(HttpStatus.CREATED)
+  @UseGuards(FirebaseAuthGuard)
   @ApiCreatedResponse({
     description: "Create new user",
     type: [Barber],

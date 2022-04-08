@@ -3,6 +3,7 @@ import { ConfigModule } from '@nestjs/config';
 import { MongooseModule } from '@nestjs/mongoose';
 import { AppointmentsModule } from './appointments/appointments.module';
 import { BarbersModule } from './barbers/barbers.module';
+import { FirebaseAuthStrategy } from './firebase/firebase-auth.strategy';
 import { UsersModule } from './users/users.module';
 
 @Module({
@@ -18,6 +19,6 @@ import { UsersModule } from './users/users.module';
     AppointmentsModule
   ],
   controllers: [],
-  providers: [],
+  providers: [FirebaseAuthStrategy],
 })
 export class AppModule { }

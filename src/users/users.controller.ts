@@ -6,13 +6,16 @@ import {
   HttpStatus,
   Query,
   Get,
+  UseGuards,
 } from "@nestjs/common";
-import { ApiTags, ApiCreatedResponse, ApiQuery, } from "@nestjs/swagger";
+import { ApiTags, ApiCreatedResponse, ApiQuery, ApiBearerAuth } from "@nestjs/swagger";
+import { FirebaseAuthGuard } from "../firebase/firebase-auth.guard";
 import { User } from "./dtos/user.dto";
 import { UsersHelper } from "./users.helper.";
 import { UsersRepository } from "./users.repository";
 
 @Controller("users")
+@ApiBearerAuth('access-token')
 @ApiTags("Users")
 export class UserController {
   constructor(
@@ -21,6 +24,7 @@ export class UserController {
   ) { }
 
   @Post()
+  @UseGuards(FirebaseAuthGuard)
   @HttpCode(HttpStatus.CREATED)
   @ApiCreatedResponse({
     status: HttpStatus.CREATED,
