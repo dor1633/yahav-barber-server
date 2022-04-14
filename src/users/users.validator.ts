@@ -14,4 +14,13 @@ export class UsersValidator {
 
         return existUser;
     }
+
+    async getOrThrowIfPhoneNumberDoesNotExist(phoneNumber: string) {
+        const existUser = await this.usersRepository.getUserByPhoneNumber(phoneNumber);
+        if (!existUser) {
+            throw new NotFoundException(`wrong phone number`);
+        }
+
+        return existUser;
+    }
 }

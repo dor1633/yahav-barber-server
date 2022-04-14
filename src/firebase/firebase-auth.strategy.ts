@@ -3,6 +3,8 @@ import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { Strategy, ExtractJwt } from 'passport-firebase-jwt';
 import * as firebaseConfig from './firebase.config.json';
 import * as firebase from 'firebase-admin';
+import { FirebaseUserType } from '../common/firebaseUser.decorator';
+import { UsersValidator } from 'src/users/users.validator';
 
 const firebase_params = {
     type: firebaseConfig.type,
@@ -23,7 +25,7 @@ export class FirebaseAuthStrategy extends PassportStrategy(
     'firebase-auth',
 ) {
     private defaultApp: firebase.app.App;;
-    constructor() {
+    constructor(private usersValidator: UsersValidator) {
         super({
             jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
         });
@@ -32,19 +34,20 @@ export class FirebaseAuthStrategy extends PassportStrategy(
         });
     }
     async validate(token: string) {
-        if (token === "pinukim") {
-            return {};
-        }
-        const firebaseUser: any = await this.defaultApp
+        const firebaseUser: FirebaseUserType = await this.defaultApp
             .auth()
             .verifyIdToken(token, true)
             .catch((err) => {
                 console.log(err);
                 throw new UnauthorizedException(err.message);
             });
+
         if (!firebaseUser) {
             throw new UnauthorizedException();
         }
+
+        const user = await this.usersValidator.getOrThrowIfPhoneNumberDoesNotExist(firebaseUser.phone_number);
+        firebaseUser.userId = user._id.toString();
 
         return firebaseUser;
     }

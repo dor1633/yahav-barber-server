@@ -7,6 +7,8 @@ import {
   Param,
   Get,
   UseGuards,
+  Req,
+  Request
 } from "@nestjs/common";
 import { ApiTags, ApiCreatedResponse, ApiOkResponse, ApiBearerAuth } from "@nestjs/swagger";
 import { BarbersValidator } from "./barbers.validator";
@@ -16,6 +18,7 @@ import { AvailabilityPerDate } from "./dtos/availabilityPerDate.dto";
 import { Barber } from "./dtos/barber.dto";
 import { BarbersRepository } from "./barbers.repository";
 import { FirebaseAuthGuard } from "src/firebase/firebase-auth.guard";
+import { FirebaseUser, FirebaseUserType } from "src/common/firebaseUser.decorator";
 
 @Controller("barbers")
 @ApiBearerAuth('access-token')
@@ -52,7 +55,7 @@ export class BarbersController {
     description: "Get schedule of barber",
     type: Schedule,
   })
-  async getScheduleOfBarber(@Param("barberId") barberId: string) {
+  async getScheduleOfBarber(@Param("barberId") barberId: string, @FirebaseUser() firebaseUser: FirebaseUserType) {
     const barber = await this.barbersValidator.getBarberIfExist(barberId);
 
     return await this.barbersHelper.getBarberFutureSchedule(barber);
